@@ -99,8 +99,8 @@ It's not helpful to assume the full structure at the start, so the initial tests
 - [x] Add deliveries to orders
 - [x] Store and retrieve deliveries added to an order
 - [x] Get an order total without discounts
-- [ ] Apply discounts to the subtotal to get a total
-- [ ] Pass the feature tests
+- [x] Apply discounts to the subtotal to get a total
+- [x] Pass the feature tests
 - [ ] Extract out delivery lists, discounts, discount lists, delivery products
 
 ## Structure
