@@ -95,9 +95,10 @@ It's not helpful to assume the full structure at the start, so the initial tests
 - [x] Write up approach and structure in README
 - [x] Set up the Gemfile and RSpec
 - [x] Write failing feature tests matching the specified examples
-- [x] Write and pass unit tests for order creation, material creation, broadcaster creation
-- [ ] Write and pass unit tests for adding deliveries to orders
-- [ ] Write and pass unit tests for order total
+- [x] Create orders, materials, broadcasters
+- [x] Add deliveries to orders
+- [x] Store and retrieve deliveries added to an order
+- [x] Get an order total without discounts
 - [ ] Write and pass unit tests for applying discounts
 - [ ] Pass the feature tests
 - [ ] Extract out delivery lists, discounts, discount lists, delivery products
@@ -138,7 +139,7 @@ Structurally, this gives us the following objects and interface methods as a lik
      * #discount_list
      * #total
 
-The add_delivery and add_discount methods are reminiscent of the builder pattern for adding features to an object.
+The add_delivery and add_discount methods are reminiscent of the builder pattern for adding features to an object. Calculating and returning currency values in a financially correct way isn't strictly within spec, so has been left for the present.
 
 ### Discounts
 
