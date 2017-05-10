@@ -95,7 +95,7 @@ It's not helpful to assume the full structure at the start, so the initial tests
 - [x] Write up approach and structure in README
 - [x] Set up the Gemfile and RSpec
 - [x] Write failing feature tests matching the specified examples
-- [ ] Write and pass unit tests for order creation, material creation, broadcaster creation
+- [x] Write and pass unit tests for order creation, material creation, broadcaster creation
 - [ ] Write and pass unit tests for adding deliveries to orders
 - [ ] Write and pass unit tests for order total
 - [ ] Write and pass unit tests for applying discounts
