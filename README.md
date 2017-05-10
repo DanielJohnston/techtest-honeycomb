@@ -99,7 +99,7 @@ It's not helpful to assume the full structure at the start, so the initial tests
 - [x] Add deliveries to orders
 - [x] Store and retrieve deliveries added to an order
 - [x] Get an order total without discounts
-- [ ] Write and pass unit tests for applying discounts
+- [ ] Apply discounts to the subtotal to get a total
 - [ ] Pass the feature tests
 - [ ] Extract out delivery lists, discounts, discount lists, delivery products
 
@@ -139,7 +139,12 @@ Structurally, this gives us the following objects and interface methods as a lik
      * #discount_list
      * #total
 
-The add_delivery and add_discount methods are reminiscent of the builder pattern for adding features to an object. Calculating and returning currency values in a financially correct way isn't strictly within spec, so has been left for the present.
+Some notes:
+
+* The add_delivery and add_discount methods are reminiscent of the builder pattern for adding features to an object
+* There are arguments either way for storing the delivery_list as an array or a hash. Arguably, a hash enforces uniqueness of each broadcaster in an order at a structural level, and the ordering provided by arrays is unnecessary. I've used an array for now, and this will be replaced during extraction of the class in any case
+* Calculating and returning currency values in a financially correct way isn't strictly within spec, so has been left for the moment
+* Discounts are structurally unusual, and are discussed below
 
 ### Discounts
 

@@ -12,10 +12,14 @@ class Order
     @delivery_list
   end
 
-  def total
+  def subtotal
     @delivery_list.inject(0) { |total, delivery|
       total + price(delivery[:delivery_product])
     }
+  end
+
+  def total
+    subtotal
   end
 
   private
