@@ -43,5 +43,14 @@ describe Order do
       order.add_delivery broadcaster, :express
       expect(order.total).to eq 20
     end
+
+    it 'for one each standard and express delivery is 30' do
+      material = double("material")
+      order = Order.new material
+      broadcaster = double("broadcaster")
+      order.add_delivery broadcaster, :standard
+      order.add_delivery broadcaster, :express
+      expect(order.total).to eq 30
+    end
   end
 end

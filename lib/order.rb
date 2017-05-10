@@ -14,7 +14,7 @@ class Order
 
   def total
     @delivery_list.inject(0) { |total, delivery|
-      price delivery[:delivery_product]
+      total + price(delivery[:delivery_product])
     }
   end
 
