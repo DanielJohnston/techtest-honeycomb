@@ -1,5 +1,5 @@
 class Order
-  def initialize material, delivery_list
+  def initialize material, delivery_list = DeliveryList.new
     @material = material
     @delivery_list = delivery_list
   end
@@ -14,25 +14,25 @@ class Order
 
   def subtotal
     delivery_list.reduce(0) { |total, delivery|
-      total + price(delivery[:delivery_product])
+      total + delivery[:delivery_product].price
     }
   end
 
-  def discount_total
+  def discount_total express_delivery_product
     running_subtotal = subtotal
-    running_subtotal -= quantity(:express) * 5 if quantity(:express) >= 2
+    running_subtotal -= quantity(express_delivery_product) * 5 if quantity(express_delivery_product) >= 2
     running_subtotal *= 0.9 if running_subtotal >= 30
     subtotal - running_subtotal
   end
 
-  def total
-    subtotal - discount_total
+  def total express_delivery_product
+    subtotal - discount_total(express_delivery_product)
   end
 
   private
 
   def quantity delivery_product
-    @delivery_list.list.count { |delivery|
+    delivery_list.count { |delivery|
         delivery[:delivery_product] == delivery_product
     }
   end

@@ -101,7 +101,10 @@ It's not helpful to assume the full structure at the start, so the initial tests
 - [x] Get an order total without discounts
 - [x] Apply discounts to the subtotal to get a total
 - [x] Pass the feature tests
-- [ ] Extract out delivery lists, discounts, discount lists, delivery products
+- [x] Extract out delivery lists
+- [x] Extract out delivery products - note some temporary ugly dependency injection
+- [ ] Extract out discounts, discount lists
+- [ ] Add API methods to retrieve names and other object details
 
 ## Structure
 
@@ -127,12 +130,14 @@ Structurally, this gives us the following objects and interface methods as a lik
      * #price
 * DeliveryList - a list of all the Broadcaster / Deliveryproduct order lines for an order
      * self#new (broadcaster, delivery_product)
+     * #add (broadcaster, delivery_product)
+     * #list
 * Discount - a discount rule applied to the contents of an order to calculate the order total
 * DiscountList - a list of all the discounts applied to an order
 * Order - a single order for delivery of an item of advertising material to one or more recipients
-     * self#new (material)
+     * self#new (material, delivery_list)
      * #clock
-     * #add_delivery (broadcaster, delivery_product) - this could factor out to its own class
+     * #add_delivery (broadcaster, delivery_product)
      * #delivery_list
      * #subtotal
      * #add_discount (discount)
@@ -143,7 +148,7 @@ Some notes:
 
 * Objects are composed using dependency injection. This makes it easier to unit test without overriding the internals of classes, and separates concerns more cleanly
 * The add_delivery and add_discount methods are reminiscent of the builder pattern for adding features to an object
-* There are arguments either way for storing the delivery_list as an array or a hash. Arguably, a hash enforces uniqueness of each broadcaster in an order at a structural level, and the ordering provided by arrays is unnecessary. I've used an array for now, and this will be replaced during extraction of the class in any case
+* There are arguments either way for storing the delivery_list as an array or a hash. Arguably, a hash enforces uniqueness of each broadcaster in an order at a structural level, and the ordering provided by arrays is unnecessary. I've used an array for now
 * Calculating and returning currency values in a financially correct way isn't strictly within spec, so has been left for the moment
 * Discounts are structurally unusual, and are discussed below
 
@@ -155,6 +160,8 @@ The interplay of discounts is evident in the second example of the spec. The sub
 
 The order of applying rules is also critical to get right. Applying the discounts in reverse order to the second example gives 60 - (10% of subtotal = $6) - ($5 discount on 3 items = $15) = $39, a completely different order total.
 
-It's difficult to be certain of future requirements for interaction between different discounts. However, a reasonable assumption is that the discount rules should run in a pre-defined order, regardless of which is added to the order first, with each rule a de facto order line that passes along an updated subtotal to the next. This allows a hierarchy of rules to be established, guaranteeing the same result each time.
+It's difficult to be certain of future requirements for presence of and interaction between different discounts. However, a reasonable assumption is that the discount rules should run in a pre-defined order, regardless of which is added to the order first, with each rule a de facto order line that passes along an updated subtotal to the next. This allows a hierarchy of rules to be established, guaranteeing the same result each time.
+
+It's less certain whether it's safe to assume that discounts can be applied universally, that is, that everyone receives the same discounts.
 
 In terms of how to define, store and add rules, the strategy pattern is a potential approach that might work. Rather than storing rules in a custom format and interpreting them each time, it makes sense to hardcode the rules until such time as a more user-customisable solution is required. However, how #add_discount would work to enable running of a rule against an order subtotal requires more thought.
