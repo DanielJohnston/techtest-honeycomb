@@ -2,7 +2,6 @@ require 'order'
 
 describe Order do
   subject do
-    material = double('material')
     order = Order.new material, delivery_list
   end
 
@@ -10,6 +9,7 @@ describe Order do
   let(:delivery_list) { double('delivery_list') }
   let(:standard) { double('standard_delivery_product') }
   let(:express) { double('express_delivery_product') }
+  let(:material) { double('material') }
 
   before(:each) do
     allow(standard).to receive(:price).and_return(10)
@@ -19,6 +19,13 @@ describe Order do
   describe '#new' do
     it 'accepts material and delivery list arguments upon creation' do
       expect { subject }.to_not raise_error
+    end
+  end
+
+  describe '#clock' do
+    it 'returns the clock value of the material being delivered' do
+      allow(material).to receive(:clock).and_return('WNP/SWCL001/010')
+      expect(subject.clock).to eq 'WNP/SWCL001/010'
     end
   end
 

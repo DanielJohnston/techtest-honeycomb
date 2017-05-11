@@ -104,8 +104,9 @@ It's not helpful to assume the full structure at the start, so the initial tests
 - [x] Extract out delivery lists
 - [x] Extract out delivery products - note some temporary ugly dependency injection
 - [x] Extract private quantity method in Order to count method in DeliveryList
+- [x] Add API methods to retrieve useful object details, e.g. names and clock code
+- [ ] Extract out individual delivery lines
 - [ ] Extract out discounts, discount lists
-- [ ] Add API methods to retrieve names and other object details
 
 ## Structure
 

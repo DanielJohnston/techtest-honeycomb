@@ -4,5 +4,5 @@ class DeliveryProduct
     @price = price
   end
 
-  attr_reader :price
+  attr_reader :price, :name
 end

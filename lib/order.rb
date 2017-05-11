@@ -4,6 +4,10 @@ class Order
     @delivery_list = delivery_list
   end
 
+  def clock
+    @material.clock
+  end
+
   def add_delivery(broadcaster, delivery_product)
     @delivery_list.add broadcaster, delivery_product
   end
