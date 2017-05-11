@@ -73,14 +73,14 @@ describe Order do
     it 'is 3 for a subtotal of 30 with no deliveries' do
       allow(subject).to receive(:subtotal).and_return(30)
       allow(delivery_list).to receive(:list).and_return([])
+      allow(delivery_list).to receive(:count).and_return(0)
       expect(subject.discount_total(express)).to eq 3
     end
 
     it 'is 10 for 2 express deliveries with forced 0 subtotal' do
       allow(subject).to receive(:subtotal).and_return(0)
-      allow(delivery_list).to receive(:list).and_return([
-        { broadcaster: broadcaster, delivery_product: express }
-      ] * 2)
+      allow(delivery_list).to receive(:list).and_return([])
+      allow(delivery_list).to receive(:count).with(express).and_return(2)
       expect(subject.discount_total(express)).to eq 10
     end
 
@@ -88,6 +88,7 @@ describe Order do
       allow(delivery_list).to receive(:list).and_return([{
         broadcaster: broadcaster, delivery_product: express
                                                         }])
+      allow(delivery_list).to receive(:count).with(express).and_return(0)
       expect(subject.discount_total(express)).to eq 0
     end
 
@@ -98,6 +99,7 @@ describe Order do
         { broadcaster: broadcaster, delivery_product: standard },
         { broadcaster: broadcaster, delivery_product: express }
                                                         ])
+      allow(delivery_list).to receive(:count).with(express).and_return(1)
       expect(subject.discount_total(express)).to eq 5
     end
 
@@ -105,6 +107,7 @@ describe Order do
       allow(delivery_list).to receive(:list).and_return([{
         broadcaster: broadcaster, delivery_product: express
       }] * 3)
+      allow(delivery_list).to receive(:count).with(express).and_return(3)
       expect(subject.discount_total(express)).to eq 19.5
     end
   end
@@ -114,6 +117,7 @@ describe Order do
       allow(delivery_list).to receive(:list).and_return([{
         broadcaster: broadcaster, delivery_product: standard
                                                         }])
+      allow(delivery_list).to receive(:count).with(express).and_return(0)
       expect(subject.total(express)).to eq 10
     end
 
@@ -121,6 +125,7 @@ describe Order do
       allow(delivery_list).to receive(:list).and_return([{
         broadcaster: broadcaster, delivery_product: express
                                                         }])
+      allow(delivery_list).to receive(:count).with(express).and_return(1)
       expect(subject.total(express)).to eq 20
     end
   end

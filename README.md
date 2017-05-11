@@ -103,6 +103,7 @@ It's not helpful to assume the full structure at the start, so the initial tests
 - [x] Pass the feature tests
 - [x] Extract out delivery lists
 - [x] Extract out delivery products - note some temporary ugly dependency injection
+- [x] Extract private quantity method in Order to count method in DeliveryList
 - [ ] Extract out discounts, discount lists
 - [ ] Add API methods to retrieve names and other object details
 

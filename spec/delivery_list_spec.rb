@@ -28,4 +28,17 @@ describe DeliveryList do
       expect { subject.add broadcaster, delivery_product }.to_not raise_error
     end
   end
+
+  describe '#count' do
+    it 'counts 3 of the provided delivery_product and not 2 others' do
+      delivery_product_2 = double('delivery_product_2')
+      2.times { subject.add broadcaster, delivery_product_2 }
+      3.times { subject.add broadcaster, delivery_product }
+      expect(subject.count(delivery_product)).to eq 3
+    end
+
+    it 'returns 0 for an empty delivery list' do
+      expect(subject.count(delivery_product)).to eq 0
+    end
+  end
 end
