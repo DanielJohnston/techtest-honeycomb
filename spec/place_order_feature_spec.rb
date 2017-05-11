@@ -12,10 +12,10 @@ describe 'Place an order' do
   it '3 standard and 1 express, with discounts totals $45.00' do
     material = Material.new 'WNP/SWCL001/010'
     order = Order.new material, DeliveryList.new
-    order.add_delivery Broadcaster.new('Disney'), standard
-    order.add_delivery Broadcaster.new('Discovery'), standard
-    order.add_delivery Broadcaster.new('Viacom'), standard
-    order.add_delivery Broadcaster.new('Horse and Country'), express
+    order.add_delivery Delivery.new(Broadcaster.new('Disney'), standard)
+    order.add_delivery Delivery.new(Broadcaster.new('Discovery'), standard)
+    order.add_delivery Delivery.new(Broadcaster.new('Viacom'), standard)
+    order.add_delivery Delivery.new(Broadcaster.new('Horse and Country'), express)
     expect(order.total(express)).to eq 45
   end
 
@@ -24,9 +24,9 @@ describe 'Place an order' do
   it '3 express, with discounts totals $40.50' do
     material = Material.new 'ZDW/EOWW005/010'
     order = Order.new material, DeliveryList.new
-    order.add_delivery Broadcaster.new('Disney'), express
-    order.add_delivery Broadcaster.new('Discovery'), express
-    order.add_delivery Broadcaster.new('Viacom'), express
+    order.add_delivery Delivery.new(Broadcaster.new('Disney'), express)
+    order.add_delivery Delivery.new(Broadcaster.new('Discovery'), express)
+    order.add_delivery Delivery.new(Broadcaster.new('Viacom'), express)
     expect(order.total(express)).to eq 40.5
   end
 end

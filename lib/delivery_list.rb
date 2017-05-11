@@ -7,13 +7,13 @@ class DeliveryList
     @delivery_list
   end
 
-  def add(broadcaster, delivery_product)
-    @delivery_list << { broadcaster: broadcaster, delivery_product: delivery_product }
+  def add(delivery)
+    @delivery_list << delivery
   end
 
   def count(delivery_product)
     list.count do |delivery|
-      delivery[:delivery_product] == delivery_product
+      delivery.delivery_product == delivery_product
     end
   end
 end

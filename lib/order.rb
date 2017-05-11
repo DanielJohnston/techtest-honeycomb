@@ -8,8 +8,8 @@ class Order
     @material.clock
   end
 
-  def add_delivery(broadcaster, delivery_product)
-    @delivery_list.add broadcaster, delivery_product
+  def add_delivery(delivery)
+    @delivery_list.add delivery
   end
 
   def delivery_list
@@ -18,7 +18,7 @@ class Order
 
   def subtotal
     delivery_list.reduce(0) do |total, delivery|
-      total + delivery[:delivery_product].price
+      total + delivery.delivery_product.price
     end
   end
 
