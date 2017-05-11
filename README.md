@@ -141,6 +141,7 @@ Structurally, this gives us the following objects and interface methods as a lik
 
 Some notes:
 
+* Objects are composed using dependency injection. This makes it easier to unit test without overriding the internals of classes, and separates concerns more cleanly
 * The add_delivery and add_discount methods are reminiscent of the builder pattern for adding features to an object
 * There are arguments either way for storing the delivery_list as an array or a hash. Arguably, a hash enforces uniqueness of each broadcaster in an order at a structural level, and the ordering provided by arrays is unnecessary. I've used an array for now, and this will be replaced during extraction of the class in any case
 * Calculating and returning currency values in a financially correct way isn't strictly within spec, so has been left for the moment

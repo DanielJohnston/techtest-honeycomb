@@ -1,19 +1,19 @@
 class Order
-  def initialize material
+  def initialize material, delivery_list
     @material = material
-    @delivery_list = []
+    @delivery_list = delivery_list
   end
 
   def add_delivery broadcaster, delivery_product
-    @delivery_list << {broadcaster: broadcaster, delivery_product: delivery_product}
+    @delivery_list.add broadcaster, delivery_product
   end
 
   def delivery_list
-    @delivery_list
+    @delivery_list.list
   end
 
   def subtotal
-    @delivery_list.inject(0) { |total, delivery|
+    delivery_list.reduce(0) { |total, delivery|
       total + price(delivery[:delivery_product])
     }
   end
@@ -32,7 +32,7 @@ class Order
   private
 
   def quantity delivery_product
-    @delivery_list.count { |delivery|
+    @delivery_list.list.count { |delivery|
         delivery[:delivery_product] == delivery_product
     }
   end
