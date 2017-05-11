@@ -1,6 +1,7 @@
 class Order
-  def initialize(material, delivery_list = DeliveryList.new)
+  def initialize(material, discount, delivery_list = DeliveryList.new)
     @material = material
+    @discount = discount
     @delivery_list = delivery_list
   end
 
@@ -22,14 +23,7 @@ class Order
     end
   end
 
-  def discount_total(express_delivery_product)
-    running_subtotal = subtotal
-    running_subtotal -= @delivery_list.count(express_delivery_product) * 5 if @delivery_list.count(express_delivery_product) >= 2
-    running_subtotal *= 0.9 if running_subtotal >= 30
-    subtotal - running_subtotal
-  end
-
-  def total(express_delivery_product)
-    subtotal - discount_total(express_delivery_product)
+  def total
+    subtotal - @discount.discount_total(@delivery_list, subtotal)
   end
 end

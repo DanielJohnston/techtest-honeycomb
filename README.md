@@ -66,7 +66,6 @@ This assumes you're installing using a command line on macOS or Linux, or the ba
 4. `bundle install` to install required gems and check Ruby compatibility
 5. `rspec` to run tests
 
-Running instructions will be added once sufficient running functionality is available.
 
 ## Technologies
 
@@ -106,7 +105,10 @@ It's not helpful to assume the full structure at the start, so the initial tests
 - [x] Extract private quantity method in Order to count method in DeliveryList
 - [x] Add API methods to retrieve useful object details, e.g. names and clock code
 - [x] Extract out individual delivery lines
-- [ ] Extract out discounts, discount lists
+- [x] Extract out discounts
+- [ ] Create a development interface that sets up the specified info and drops to IRB
+- [ ] Refactor discounts into an appropriate pattern
+- [ ] Create an OrderLine class and OrderLineList container class to hold both delivery lines and discount lines, with a running subtotal on each order_line
 
 ## Structure
 
@@ -115,7 +117,7 @@ The spec is essentially for an ecommerce system, where an order has:
 * A single (for now) item of advertising material
 * One or more recipients each of which has a specified delivery method. Each recipient and delivery method equates to an order line
 * A subtotal
-* A selection of zero or more rules-based discounts, which (for now) are applied per-order
+* Zero or more rules-based discounts, which (for now) are applied per-order
 * A total derived from the subtotal and discounts
 
 Structurally, this gives us the following objects and interface methods as a likely outcome of development:
@@ -131,15 +133,19 @@ Structurally, this gives us the following objects and interface methods as a lik
      * #name
      * #price
 * DeliveryList - a list of all the Broadcaster / Deliveryproduct order lines for an order
-     * self#new (broadcaster, delivery_product)
-     * #add (broadcaster, delivery_product)
+     * self#new
+     * #add (delivery)
      * #list
+     * #count (delivery_product)
 * Discount - a discount rule applied to the contents of an order to calculate the order total
+     * self#new
+     * #set_express (express_delivery_product)
+     * #discount_total (delivery_list, subtotal)
 * DiscountList - a list of all the discounts applied to an order
 * Order - a single order for delivery of an item of advertising material to one or more recipients
      * self#new (material, delivery_list)
      * #clock
-     * #add_delivery (broadcaster, delivery_product)
+     * #add_delivery (delivery)
      * #delivery_list
      * #subtotal
      * #add_discount (discount)
@@ -166,4 +172,4 @@ It's difficult to be certain of future requirements for presence of and interact
 
 It's less certain whether it's safe to assume that discounts can be applied universally, that is, that everyone receives the same discounts.
 
-In terms of how to define, store and add rules, the strategy pattern is a potential approach that might work. Rather than storing rules in a custom format and interpreting them each time, it makes sense to hardcode the rules until such time as a more user-customisable solution is required. However, how #add_discount would work to enable running of a rule against an order subtotal requires more thought.
+In terms of how to define, store and add rules, the strategy pattern is a potential approach that might work. Rather than storing rules in a custom format and interpreting them each time, it makes sense to hardcode the rules until such time as a more user-customisable solution is required. Ideally, a good solution would iterate through each rule in turn, asses if it applies, and add an order_line with the effect if so.
