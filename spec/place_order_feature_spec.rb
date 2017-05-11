@@ -5,10 +5,13 @@ end
 describe 'Place an order' do
   let(:standard) { DeliveryProduct.new 'Standard', 10 }
   let(:express) { DeliveryProduct.new 'Express', 20 }
-  let(:discount) { Discount.new }
+  let(:delivery_list) { DeliveryList.new }
+  let(:discount_list) { DiscountList.new }
 
   before(:each) do
-    discount.set_express express
+    # The order of these is not commutative
+    discount_list.add Discount.new(ExpressMultipurchaseDiscount.new express)
+    discount_list.add Discount.new(Over30Discount.new)
   end
 
   # Spec example 1: send `WNP/SWCL001/010` to Disney, Discovery, Viacom via
@@ -16,7 +19,7 @@ describe 'Place an order' do
   # on the defined Discounts the total should be $45.00
   it '3 standard and 1 express, with discounts totals $45.00' do
     material = Material.new 'WNP/SWCL001/010'
-    order = Order.new material, discount, DeliveryList.new
+    order = Order.new material, discount_list, delivery_list
     order.add_delivery Delivery.new(Broadcaster.new('Disney'), standard)
     order.add_delivery Delivery.new(Broadcaster.new('Discovery'), standard)
     order.add_delivery Delivery.new(Broadcaster.new('Viacom'), standard)
@@ -28,7 +31,7 @@ describe 'Place an order' do
   # Express Delivery, based on the defined Discounts the total should be $40.50
   it '3 express, with discounts totals $40.50' do
     material = Material.new 'ZDW/EOWW005/010'
-    order = Order.new material, discount, DeliveryList.new
+    order = Order.new material, discount_list, delivery_list
     order.add_delivery Delivery.new(Broadcaster.new('Disney'), express)
     order.add_delivery Delivery.new(Broadcaster.new('Discovery'), express)
     order.add_delivery Delivery.new(Broadcaster.new('Viacom'), express)

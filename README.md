@@ -108,7 +108,7 @@ It's not helpful to assume the full structure at the start, so the initial tests
 - [x] Extract out individual delivery lines
 - [x] Extract out discounts
 - [x] Create a development interface that sets up the specified info and drops to Pry
-- [ ] Refactor discounts into an appropriate pattern
+- [ ] Refactor discounts to a DiscountList class and use Discount as a context for individual discount strategies using strategy pattern
 - [ ] Create an OrderLine class and OrderLineList container class to hold both delivery lines and discount lines, with a running subtotal on each order_line
 
 ## Structure

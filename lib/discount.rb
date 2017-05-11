@@ -1,17 +1,28 @@
 class Discount
- def initialize
-   @express_delivery_product = nil
+ def initialize discount_strategy
+   @discount_strategy = discount_strategy
+  #  @express_delivery_product = nil
  end
 
- def set_express express_delivery_product
-   @express_delivery_product = express_delivery_product
+ def applies? delivery_list, running_subtotal
+   @discount_strategy.applies? delivery_list, running_subtotal
  end
 
- def discount_total delivery_list, subtotal
-   raise 'First define the express delivery product using #set_express' unless @express_delivery_product
-   running_subtotal = subtotal
-   running_subtotal -= delivery_list.count(@express_delivery_product) * 5 if delivery_list.count(@express_delivery_product) >= 2
-   running_subtotal *= 0.9 if running_subtotal >= 30
-   subtotal - running_subtotal
+ def reduction delivery_list, running_subtotal
+   @discount_strategy.reduction delivery_list, running_subtotal
  end
+
+
+
+ # def set_express express_delivery_product
+ #   @express_delivery_product = express_delivery_product
+ # end
+ #
+ # def discount_total delivery_list, subtotal
+ #   raise 'First define the express delivery product using #set_express' unless @express_delivery_product
+ #   running_subtotal = subtotal
+ #   running_subtotal -= delivery_list.count(@express_delivery_product) * 5 if delivery_list.count(@express_delivery_product) >= 2
+ #   running_subtotal *= 0.9 if running_subtotal >= 30
+ #   subtotal - running_subtotal
+ # end
 end

@@ -23,6 +23,27 @@ class Order
     end
   end
 
+  # def order_lines
+  #   lines = []
+  #   delivery_list.each do |delivery|
+  #     lines << delivery
+  #   end
+  #   lines
+  # end
+
+  def discount_lines
+    lines = []
+    running_subtotal = subtotal
+    discount_list.each do |discount|
+      if discount.applies?(delivery_list, running_subtotal)
+        reduction = discount.reduction(delivery_list, running_subtotal)
+        running_subtotal -= reduction
+        lines << [discount.name, reduction, running_subtotal]
+      end
+    end
+    lines
+  end
+
   def total
     subtotal - @discount.discount_total(@delivery_list, subtotal)
   end
