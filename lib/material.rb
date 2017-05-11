@@ -1,5 +1,5 @@
 class Material
-  def initialize clock
+  def initialize(clock)
     @clock = clock
   end
 end

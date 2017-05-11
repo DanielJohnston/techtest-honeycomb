@@ -7,7 +7,7 @@ class DeliveryList
     @delivery_list
   end
 
-  def add broadcaster, delivery_product
-    @delivery_list << {broadcaster: broadcaster, delivery_product: delivery_product}
+  def add(broadcaster, delivery_product)
+    @delivery_list << { broadcaster: broadcaster, delivery_product: delivery_product }
   end
 end

@@ -1,10 +1,10 @@
-Dir[File.expand_path(File.join(File.dirname(File.absolute_path(__FILE__)), '../lib')) + "/**/*.rb"].each do |file|
-    require file
+Dir[File.expand_path(File.join(File.dirname(File.absolute_path(__FILE__)), '../lib')) + '/**/*.rb'].each do |file|
+  require file
 end
 
 describe 'Place an order' do
-  let(:standard) { DeliveryProduct.new "Standard", 10 }
-  let(:express) { DeliveryProduct.new "Express", 20 }
+  let(:standard) { DeliveryProduct.new 'Standard', 10 }
+  let(:express) { DeliveryProduct.new 'Express', 20 }
 
   # Spec example 1: send `WNP/SWCL001/010` to Disney, Discovery, Viacom via
   # Standard Delivery and Horse and Country via Express Delivery, based

@@ -1,15 +1,15 @@
 require 'order'
 
 describe Order do
-  subject {
-    material = double("material")
+  subject do
+    material = double('material')
     order = Order.new material, delivery_list
-  }
+  end
 
-  let(:broadcaster) { double("broadcaster") }
-  let(:delivery_list) { double("delivery_list") }
-  let(:standard) { double("standard_delivery_product") }
-  let(:express) { double("express_delivery_product") }
+  let(:broadcaster) { double('broadcaster') }
+  let(:delivery_list) { double('delivery_list') }
+  let(:standard) { double('standard_delivery_product') }
+  let(:express) { double('express_delivery_product') }
 
   before(:each) do
     allow(standard).to receive(:price).and_return(10)
@@ -18,14 +18,14 @@ describe Order do
 
   describe '#new' do
     it 'accepts material and delivery list arguments upon creation' do
-      expect{ subject }.to_not raise_error
+      expect { subject }.to_not raise_error
     end
   end
 
   describe '#add_delivery' do
     it 'accepts a broadcaster and standard delivery method argument' do
       allow(delivery_list).to receive(:add).with(broadcaster, standard)
-      expect{ subject.add_delivery broadcaster, standard }.to_not raise_error
+      expect { subject.add_delivery broadcaster, standard }.to_not raise_error
     end
   end
 
@@ -39,27 +39,31 @@ describe Order do
   describe '#subtotal' do
     it 'for a single standard delivery is 10' do
       allow(delivery_list).to receive(:list).and_return([{
-        broadcaster: broadcaster, delivery_product: standard }])
+                                                          broadcaster: broadcaster, delivery_product: standard
+                                                        }])
       expect(subject.subtotal).to eq 10
     end
 
     it 'for a single express delivery is 20' do
       allow(delivery_list).to receive(:list).and_return([{
-        broadcaster: broadcaster, delivery_product: express }])
+                                                          broadcaster: broadcaster, delivery_product: express
+                                                        }])
       expect(subject.subtotal).to eq 20
     end
 
     it 'for one each standard and express delivery is 30' do
       allow(delivery_list).to receive(:list).and_return([{
-        broadcaster: broadcaster, delivery_product: standard}, {
-          broadcaster: broadcaster, delivery_product: express
-          }])
+                                                          broadcaster: broadcaster, delivery_product: standard
+                                                        }, {
+                                                          broadcaster: broadcaster, delivery_product: express
+                                                        }])
       expect(subject.subtotal).to eq 30
     end
 
     it 'for five standard deliveries is 50' do
       allow(delivery_list).to receive(:list).and_return([
-        { broadcaster: broadcaster, delivery_product: standard }] * 5 )
+        { broadcaster: broadcaster, delivery_product: standard }
+      ] * 5)
       expect(subject.subtotal).to eq 50
     end
   end
@@ -76,28 +80,31 @@ describe Order do
       allow(subject).to receive(:subtotal).and_return(0)
       allow(delivery_list).to receive(:list).and_return([
         { broadcaster: broadcaster, delivery_product: express }
-        ] * 2)
+      ] * 2)
       expect(subject.discount_total(express)).to eq 10
     end
 
     it 'is 0 for a single standard delivery' do
       allow(delivery_list).to receive(:list).and_return([{
-        broadcaster: broadcaster, delivery_product: express }])
+                                                          broadcaster: broadcaster, delivery_product: express
+                                                        }])
       expect(subject.discount_total(express)).to eq 0
     end
 
     it 'is 5 for 3 standard and 1 express' do
       allow(delivery_list).to receive(:list).and_return([
-        { broadcaster: broadcaster, delivery_product: standard },
-        { broadcaster: broadcaster, delivery_product: standard },
-        { broadcaster: broadcaster, delivery_product: standard },
-        { broadcaster: broadcaster, delivery_product: express }])
+                                                          { broadcaster: broadcaster, delivery_product: standard },
+                                                          { broadcaster: broadcaster, delivery_product: standard },
+                                                          { broadcaster: broadcaster, delivery_product: standard },
+                                                          { broadcaster: broadcaster, delivery_product: express }
+                                                        ])
       expect(subject.discount_total(express)).to eq 5
     end
 
     it 'is 19.50 for 3 express' do
       allow(delivery_list).to receive(:list).and_return([{
-        broadcaster: broadcaster, delivery_product: express }] * 3)
+        broadcaster: broadcaster, delivery_product: express
+      }] * 3)
       expect(subject.discount_total(express)).to eq 19.5
     end
   end
@@ -105,13 +112,15 @@ describe Order do
   describe '#total' do
     it 'is 10 for a single standard delivery' do
       allow(delivery_list).to receive(:list).and_return([{
-        broadcaster: broadcaster, delivery_product: standard }])
+                                                          broadcaster: broadcaster, delivery_product: standard
+                                                        }])
       expect(subject.total(express)).to eq 10
     end
 
     it 'is 20 for a single express delivery' do
       allow(delivery_list).to receive(:list).and_return([{
-        broadcaster: broadcaster, delivery_product: express }])
+                                                          broadcaster: broadcaster, delivery_product: express
+                                                        }])
       expect(subject.total(express)).to eq 20
     end
   end
