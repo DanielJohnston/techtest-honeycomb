@@ -1,7 +1,6 @@
 class Discount
  def initialize
    @express_delivery_product = nil
-   irb
  end
 
  def set_express express_delivery_product

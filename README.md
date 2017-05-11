@@ -66,6 +66,7 @@ This assumes you're installing using a command line on macOS or Linux, or the ba
 4. `bundle install` to install required gems and check Ruby compatibility
 5. `rspec` to run tests
 
+A script has been created in the project root to facilitate testing. It populates the objects described in the specification and drops to a Ruby command line via Pry. Use `ruby populate.rb` to run the interface. Note that the Gemfile only includes Pry as a dependency on 'development' installations, but this is the default situation you're likely to encounter.
 
 ## Technologies
 
@@ -106,7 +107,7 @@ It's not helpful to assume the full structure at the start, so the initial tests
 - [x] Add API methods to retrieve useful object details, e.g. names and clock code
 - [x] Extract out individual delivery lines
 - [x] Extract out discounts
-- [ ] Create a development interface that sets up the specified info and drops to IRB
+- [x] Create a development interface that sets up the specified info and drops to Pry
 - [ ] Refactor discounts into an appropriate pattern
 - [ ] Create an OrderLine class and OrderLineList container class to hold both delivery lines and discount lines, with a running subtotal on each order_line
 
