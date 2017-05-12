@@ -1,7 +1,7 @@
 class Order
-  def initialize(material, discount, delivery_list = DeliveryList.new)
+  def initialize(material, discount_list, delivery_list = DeliveryList.new)
     @material = material
-    @discount = discount
+    @discount_list = discount_list
     @delivery_list = delivery_list
   end
 
@@ -31,20 +31,26 @@ class Order
   #   lines
   # end
 
-  def discount_lines
+  def discount_list
+    @discount_list.list
+  end
+
+  def discount_lines return_total: false
     lines = []
     running_subtotal = subtotal
     discount_list.each do |discount|
-      if discount.applies?(delivery_list, running_subtotal)
-        reduction = discount.reduction(delivery_list, running_subtotal)
+      if discount.applies?(@delivery_list, running_subtotal)
+        reduction = discount.reduction(@delivery_list, running_subtotal)
         running_subtotal -= reduction
-        lines << [discount.name, reduction, running_subtotal]
+        lines << {name: discount.name, reduction: reduction, subtotal: running_subtotal}
+      else
       end
     end
+    return running_subtotal if return_total
     lines
   end
 
   def total
-    subtotal - @discount.discount_total(@delivery_list, subtotal)
+    discount_lines(return_total:true)
   end
 end

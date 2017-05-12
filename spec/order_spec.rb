@@ -2,11 +2,11 @@ require 'order'
 
 describe Order do
   subject do
-    order = Order.new material, discount, delivery_list
+    order = Order.new material, discount_list, delivery_list
   end
 
   let(:material) { double('material') }
-  let(:discount) { double('discount') }
+  let(:discount_list) { double('discount_list') }
   let(:delivery_list) { double('delivery_list') }
   let(:delivery) { double('delivery') }
   let(:standard) { double('standard_delivery_product') }
@@ -72,12 +72,22 @@ describe Order do
     end
   end
 
+  describe '#discount_list' do
+    it 'returns a discount_list that has been passed into an order' do
+      allow(discount_list).to receive(:list).and_return(discount_list)
+      expect(subject.discount_list).to eq discount_list
+    end
+  end
+
   describe '#total' do
+    let(:discount) { double('discount') }
+
     it 'is 10 for a single standard delivery with no discount' do
       allow(delivery_list).to receive(:list).and_return([delivery])
       allow(delivery_list).to receive(:count).with(express).and_return(0)
       allow(delivery).to receive(:delivery_product).and_return(standard)
-      allow(discount).to receive(:discount_total).and_return(0)
+      allow(discount_list).to receive(:list).and_return([discount])
+      allow(discount).to receive(:applies?).with(delivery_list, 10).and_return(false)
       expect(subject.total).to eq 10
     end
 
@@ -85,15 +95,20 @@ describe Order do
       allow(delivery_list).to receive(:list).and_return([delivery])
       allow(delivery_list).to receive(:count).with(express).and_return(1)
       allow(delivery).to receive(:delivery_product).and_return(express)
-      allow(discount).to receive(:discount_total).and_return(0)
+      allow(discount_list).to receive(:list).and_return([discount])
+      allow(discount).to receive(:applies?).with(delivery_list, 20).and_return(false)
       expect(subject.total).to eq 20
     end
 
     it 'is 40.50 for 3 express with 19.50 discount' do
+      name = double('name')
       allow(delivery_list).to receive(:list).and_return([delivery] * 3)
       allow(delivery_list).to receive(:count).with(express).and_return(3)
       allow(delivery).to receive(:delivery_product).and_return(express)
-      allow(discount).to receive(:discount_total).with(delivery_list, 60).and_return(19.5)
+      allow(discount_list).to receive(:list).and_return([discount])
+      allow(discount).to receive(:name).and_return(name)
+      allow(discount).to receive(:applies?).with(delivery_list, 60).and_return(true)
+      allow(discount).to receive(:reduction).with(any_args).and_return(19.5)
       expect(subject.total).to eq 40.5
     end
   end

@@ -3,6 +3,10 @@ class ExpressMultipurchaseDiscount
     @express_delivery_product = express_delivery_product
   end
 
+  def name
+    'Express delivery costs $5 less per delivery if you send 2 or more materials'
+  end
+
   def applies? delivery_list, running_subtotal
     delivery_list.count(@express_delivery_product) >= 2
   end

@@ -108,8 +108,9 @@ It's not helpful to assume the full structure at the start, so the initial tests
 - [x] Extract out individual delivery lines
 - [x] Extract out discounts
 - [x] Create a development interface that sets up the specified info and drops to Pry
-- [ ] Refactor discounts to a DiscountList class and use Discount as a context for individual discount strategies using strategy pattern
+- [x] Refactor discounts to a DiscountList class and use Discount as a context for individual discount strategies using strategy pattern
 - [ ] Create an OrderLine class and OrderLineList container class to hold both delivery lines and discount lines, with a running subtotal on each order_line
+- [ ] Select material per order_line instead of per order, allowing multiple materials in one order
 
 ## Structure
 
@@ -126,6 +127,14 @@ Structurally, this gives us the following objects and interface methods as a lik
 * Material - the item of advertising material, defined by a unique 'Clock' number
      * self#new (clock)
      * #clock returns the unique clock number of the Material object
+* DeliveryList - a list of all the Broadcaster / Deliveryproduct order lines for an order
+     * self#new
+     * #list
+     * #add (delivery)
+     * #count (delivery_product)
+* Delivery - a single delivery line, containing a broadcaster and delivery_product
+     * self#new (broadcaster, delivery_product)
+     * attr_reader broadcaster, delivery_product
 * Broadcaster - a recipient of advertising material, e.g. Viacom or Disney
      * self#new (name)
      * #name
@@ -133,16 +142,15 @@ Structurally, this gives us the following objects and interface methods as a lik
      * self#new (name, price)
      * #name
      * #price
-* DeliveryList - a list of all the Broadcaster / Deliveryproduct order lines for an order
+* DiscountList - a list of all the discounts applied to an order
      * self#new
-     * #add (delivery)
-     * #list
-     * #count (delivery_product)
+     * list
+     * add (discount)
 * Discount - a discount rule applied to the contents of an order to calculate the order total
      * self#new
-     * #set_express (express_delivery_product)
-     * #discount_total (delivery_list, subtotal)
-* DiscountList - a list of all the discounts applied to an order
+     * #name
+     * #applies? (delivery_list, running_subtotal)
+     * #reduction (delivery_list, running_subtotal)
 * Order - a single order for delivery of an item of advertising material to one or more recipients
      * self#new (material, delivery_list)
      * #clock
@@ -169,8 +177,8 @@ The interplay of discounts is evident in the second example of the spec. The sub
 
 The order of applying rules is also critical to get right. Applying the discounts in reverse order to the second example gives 60 - (10% of subtotal = $6) - ($5 discount on 3 items = $15) = $39, a completely different order total.
 
-It's difficult to be certain of future requirements for presence of and interaction between different discounts. However, a reasonable assumption is that the discount rules should run in a pre-defined order, regardless of which is added to the order first, with each rule a de facto order line that passes along an updated subtotal to the next. This allows a hierarchy of rules to be established, guaranteeing the same result each time.
+It's difficult to be certain of future requirements for presence of and interaction between different discounts. A reasonable assumption is that the discount rules should run in a pre-defined order, regardless of which is added to the order first, with each rule a de facto order line that passes along an updated subtotal to the next. This allows a hierarchy of rules to be established, guaranteeing the same result each time.  I haven't implemented this yet, but it's not particularly difficult, and would be sensible before using in environments where people might enter discounts in the 'wrong' order.
 
-It's less certain whether it's safe to assume that discounts can be applied universally, that is, that everyone receives the same discounts.
+It's clear from the spec that there should be flexibility to apply different discounts to different customers, and that it should be easy to add new discount rules.
 
-In terms of how to define, store and add rules, the strategy pattern is a potential approach that might work. Rather than storing rules in a custom format and interpreting them each time, it makes sense to hardcode the rules until such time as a more user-customisable solution is required. Ideally, a good solution would iterate through each rule in turn, asses if it applies, and add an order_line with the effect if so.
+In terms of how to define, store and add rules, the strategy pattern is a potential approach that might work. Rather than storing rules in a custom format and interpreting them each time, it makes sense to hardcode the rules until such time as a more user-customisable solution is required. Ideally, a good solution would iterate through each rule in turn, assess if it applies, and add an order_line with the effect if so.

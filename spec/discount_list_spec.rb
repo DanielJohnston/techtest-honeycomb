@@ -26,25 +26,8 @@ describe DiscountList do
   end
 
   describe '#add' do
-    it 'accepts a discount argument' do
+    it 'accepts an argument containing a discount' do
       expect { subject.add discount }.to_not raise_error
     end
   end
-
-  # describe '#active_discounts' do
-  #   it 'returns 2 active discounts and not 2 inactive ones, in the order entered' do
-  #     discount_2 = double('discount_2')
-  #     discount_3 = double('discount_3')
-  #     discount_4 = double('discount_4')
-  #     subject.add discount
-  #     subject.add discount_2
-  #     subject.add discount_3
-  #     subject.add discount_4
-  #     allow(discount).to receive(:applies?).and_return(false)
-  #     allow(discount_2).to receive(:applies?).and_return(true)
-  #     allow(discount_3).to receive(:applies?).and_return(false)
-  #     allow(discount_4).to receive(:applies?).and_return(true)
-  #     expect(subject.active_discounts).to eq [discount_2, discount_4]
-  #   end
-  # end
 end
