@@ -9,7 +9,7 @@ describe Discount do
 
   describe '#new' do
     it 'accepts a single discount strategy argument on creation' do
-      expect{ subject }.to_not raise_error
+      expect { subject }.to_not raise_error
     end
   end
 

@@ -4,7 +4,7 @@ describe DiscountList do
   let(:discount) { double('discount') }
 
   it 'takes no arguments' do
-    expect{ subject }.to_not raise_error
+    expect { subject }.to_not raise_error
   end
 
   describe '#list' do

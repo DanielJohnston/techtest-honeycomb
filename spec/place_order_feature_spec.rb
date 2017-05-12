@@ -10,7 +10,7 @@ describe 'Place an order' do
 
   before(:each) do
     # The order of these is not commutative
-    discount_list.add Discount.new(ExpressMultipurchaseDiscount.new express)
+    discount_list.add Discount.new(ExpressMultipurchaseDiscount.new(express))
     discount_list.add Discount.new(Over30Discount.new)
   end
 

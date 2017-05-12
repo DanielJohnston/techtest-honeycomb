@@ -33,7 +33,7 @@ describe DeliveryList do
       delivery_product_2 = double('delivery_product_2')
       5.times { subject.add delivery }
       allow(delivery).to receive(:delivery_product).and_return(delivery_product_1,
-      delivery_product_1, delivery_product_2, delivery_product_2, delivery_product_2)
+        delivery_product_1, delivery_product_2, delivery_product_2, delivery_product_2)
       expect(subject.count(delivery_product_2)).to eq 3
     end
 

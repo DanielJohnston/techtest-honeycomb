@@ -1,5 +1,5 @@
 class Over30Discount
-  def applies? delivery_list, running_subtotal
+  def applies?(_delivery_list, running_subtotal)
     running_subtotal >= 30
   end
 
@@ -7,7 +7,7 @@ class Over30Discount
     'Spend over $30 to get 10% off'
   end
 
-  def reduction delivery_list, running_subtotal
+  def reduction(_delivery_list, running_subtotal)
     running_subtotal * 0.1
   end
 end

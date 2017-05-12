@@ -70,7 +70,7 @@ A script has been created in the project root to facilitate testing. It populate
 
 ## Technologies
 
-I'm planning on using the following tools to meet the specification:
+I used the following tools to meet the specification:
 
 * *Ruby* to write the solution code
 * *Bundler* to define the required gems and Ruby version, dependent on purpose
@@ -86,11 +86,11 @@ Technology that will *not* be used:
 
 ## Development approach
 
-The spec lends itself to a TDD approach, with a structure that develops following OOP principles. Specifically, the two examples in the spec provide useful feature tests, which can drive the creation of unit tests and thence the actual code through a red-green-refactor cycle.
+The spec lends itself to a TDD approach, with a structure that develops following OOP principles. Specifically, the two examples in the spec provide useful feature tests, which drove the creation of unit tests and thence the actual code through a red-green-refactor cycle.
 
-It's unlikely that git branches will be useful in this project, as there aren't multiple features being developed in parallel or by different coders, and there's no requirement to maintain a 'blessed' production version.
+Git branches weren't used in this project, as there weren't multiple features being developed in parallel or by different coders, and there's no requirement to maintain a 'blessed' production version.
 
-It's not helpful to assume the full structure at the start, so the initial tests and development will build out from a small number of classes, extracting further classes as they become justified by the complexity of the code. This will entail rewriting feature and unit tests each time a class is extracted. A proposed task list follows:
+It's not helpful to assume the full structure at the start, so the initial tests and development were built out from a small number of classes, extracting further classes as they became justified by the complexity of the code. The strategy pattern in particular required lots of rewriting of the test cases and code base, possibly due to premature extraction of classes. The order of development was:
 
 - [x] Write up approach and structure in README
 - [x] Set up the Gemfile and RSpec
@@ -109,7 +109,8 @@ It's not helpful to assume the full structure at the start, so the initial tests
 - [x] Extract out discounts
 - [x] Create a development interface that sets up the specified info and drops to Pry
 - [x] Refactor discounts to a DiscountList class and use Discount as a context for individual discount strategies using strategy pattern
-- [ ] Create an OrderLine class and OrderLineList container class to hold both delivery lines and discount lines, with a running subtotal on each order_line
+- [ ] Create a hierarchy for order of executing discount strategies
+- [ ] Create an OrderSummary class that brings together all the information in a readable way, suitable for permanent storage if wanted
 - [ ] Select material per order_line instead of per order, allowing multiple materials in one order
 
 ## Structure
@@ -122,12 +123,21 @@ The spec is essentially for an ecommerce system, where an order has:
 * Zero or more rules-based discounts, which (for now) are applied per-order
 * A total derived from the subtotal and discounts
 
-Structurally, this gives us the following objects and interface methods as a likely outcome of development:
+This led to the following classes and methods:
 
+* Order - a single order for delivery of an item of advertising material to one or more recipients
+     * self#new (material, discount_list, delivery_list)
+     * #clock
+     * #add_delivery (delivery)
+     * #delivery_list
+     * #subtotal
+     * #discount_list
+     * #discount_lines (return_total)
+     * #total
 * Material - the item of advertising material, defined by a unique 'Clock' number
      * self#new (clock)
      * #clock returns the unique clock number of the Material object
-* DeliveryList - a list of all the Broadcaster / Deliveryproduct order lines for an order
+* DeliveryList - a list of all the broadcaster / delivery_product order lines for an order
      * self#new
      * #list
      * #add (delivery)
@@ -137,11 +147,10 @@ Structurally, this gives us the following objects and interface methods as a lik
      * attr_reader broadcaster, delivery_product
 * Broadcaster - a recipient of advertising material, e.g. Viacom or Disney
      * self#new (name)
-     * #name
+     * attr_reader name
 * DeliveryProduct - a type of delivery and standard price for that type
      * self#new (name, price)
-     * #name
-     * #price
+     * attr_reader name, price
 * DiscountList - a list of all the discounts applied to an order
      * self#new
      * list
@@ -151,17 +160,11 @@ Structurally, this gives us the following objects and interface methods as a lik
      * #name
      * #applies? (delivery_list, running_subtotal)
      * #reduction (delivery_list, running_subtotal)
-* Order - a single order for delivery of an item of advertising material to one or more recipients
-     * self#new (material, delivery_list)
-     * #clock
-     * #add_delivery (delivery)
-     * #delivery_list
-     * #subtotal
-     * #add_discount (discount)
-     * #discount_list
-     * #total
+* (Discount strategies) - individual discount rules stored in lib/discount_strategies
+     * self#new (arguments vary)
+     * (match to the Discount methods as they're strategies!)
 
-Some notes:
+Some notes on this structure:
 
 * Objects are composed using dependency injection. This makes it easier to unit test without overriding the internals of classes, and separates concerns more cleanly
 * The add_delivery and add_discount methods are reminiscent of the builder pattern for adding features to an object
@@ -179,6 +182,4 @@ The order of applying rules is also critical to get right. Applying the discount
 
 It's difficult to be certain of future requirements for presence of and interaction between different discounts. A reasonable assumption is that the discount rules should run in a pre-defined order, regardless of which is added to the order first, with each rule a de facto order line that passes along an updated subtotal to the next. This allows a hierarchy of rules to be established, guaranteeing the same result each time.  I haven't implemented this yet, but it's not particularly difficult, and would be sensible before using in environments where people might enter discounts in the 'wrong' order.
 
-It's clear from the spec that there should be flexibility to apply different discounts to different customers, and that it should be easy to add new discount rules.
-
-In terms of how to define, store and add rules, the strategy pattern is a potential approach that might work. Rather than storing rules in a custom format and interpreting them each time, it makes sense to hardcode the rules until such time as a more user-customisable solution is required. Ideally, a good solution would iterate through each rule in turn, assess if it applies, and add an order_line with the effect if so.
+It's clear from the spec that there should be flexibility to apply different discounts to different customers, and that it should be easy to add new discount rules. I adopted something approaching a strategy pattern to accomplish this, which iterates through each of the discounts applied to an order in turn, assesses if they apply, and implements them if so. There's still room to improve on this, especially in the way that objects flow through the structure.

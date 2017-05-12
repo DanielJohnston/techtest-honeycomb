@@ -1,5 +1,5 @@
 class Delivery
-  def initialize broadcaster, delivery_product
+  def initialize(broadcaster, delivery_product)
     @broadcaster = broadcaster
     @delivery_product = delivery_product
   end

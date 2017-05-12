@@ -11,11 +11,11 @@ describe ExpressMultipurchaseDiscount do
 
   describe '#new' do
     it 'accepts an express_delivery_product' do
-      expect{ subject }.to_not raise_error
+      expect { subject }.to_not raise_error
     end
 
     it 'raises an error if an express_delivery_product is not supplied' do
-      expect{ ExpressMultipurchaseDiscount.new }.to raise_error(ArgumentError)
+      expect { ExpressMultipurchaseDiscount.new }.to raise_error(ArgumentError)
     end
   end
 

@@ -6,7 +6,7 @@ describe Over30Discount do
 
   describe '#new' do
     it 'instantiates without any arguments' do
-      expect{ subject }.to_not raise_error
+      expect { subject }.to_not raise_error
     end
   end
 

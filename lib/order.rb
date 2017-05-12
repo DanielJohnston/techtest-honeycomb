@@ -26,7 +26,7 @@ class Order
   # def order_lines
   #   lines = []
   #   delivery_list.each do |delivery|
-  #     lines << delivery
+  #     lines << {broadcaster_name: delivery.broadcaster.name, delivery_product_name: delivery.delivery_product.name, price: delivery.delivery_product.price}
   #   end
   #   lines
   # end
@@ -35,22 +35,20 @@ class Order
     @discount_list.list
   end
 
-  def discount_lines return_total: false
+  def discount_lines(return_total: false)
     lines = []
     running_subtotal = subtotal
     discount_list.each do |discount|
-      if discount.applies?(@delivery_list, running_subtotal)
-        reduction = discount.reduction(@delivery_list, running_subtotal)
-        running_subtotal -= reduction
-        lines << {name: discount.name, reduction: reduction, subtotal: running_subtotal}
-      else
-      end
+      next unless discount.applies?(@delivery_list, running_subtotal)
+      reduction = discount.reduction(@delivery_list, running_subtotal)
+      running_subtotal -= reduction
+      lines << { name: discount.name, reduction: reduction, subtotal: running_subtotal }
     end
     return running_subtotal if return_total
     lines
   end
 
   def total
-    discount_lines(return_total:true)
+    discount_lines(return_total: true)
   end
 end

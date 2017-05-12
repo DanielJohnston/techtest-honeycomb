@@ -8,7 +8,7 @@ standard = DeliveryProduct.new 'Standard', 10
 express = DeliveryProduct.new 'Express', 20
 
 discount_list = DiscountList.new
-discount_list.add Discount.new(ExpressMultipurchaseDiscount.new express)
+discount_list.add Discount.new(ExpressMultipurchaseDiscount.new(express))
 discount_list.add Discount.new(Over30Discount.new)
 
 broadcasters = {}
