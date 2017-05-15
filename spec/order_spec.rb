@@ -79,6 +79,73 @@ describe Order do
     end
   end
 
+  describe '#discount_lines' do
+    it 'returns an empty list when 0 of 1 possible discounts apply' do
+      discount = double('discount')
+      allow(discount_list).to receive(:list).and_return([discount])
+      allow(discount).to receive(:applies?).with(delivery_list, 10).and_return(false)
+      allow(delivery_list).to receive(:list).and_return([delivery])
+      allow(delivery).to receive(:delivery_product).and_return(standard)
+      expect(subject.discount_lines).to eq []
+    end
+
+    it 'returns total equal to subtotal when no discounts apply' do
+      discount = double('discount')
+      allow(discount_list).to receive(:list).and_return([discount])
+      allow(discount).to receive(:applies?).with(delivery_list, 10).and_return(false)
+      allow(delivery_list).to receive(:list).and_return([delivery])
+      allow(delivery).to receive(:delivery_product).and_return(standard)
+      expect(subject.discount_lines(return_total: true)).to eq 10
+    end
+
+    it 'returns a list of 2 discounts when both apply' do
+      discount = double('discount')
+      discount_2 = double('discount_2')
+      discount_name = double('discount_name')
+      allow(discount_list).to receive(:list).and_return([discount, discount_2])
+      allow(discount).to receive(:applies?).with(delivery_list, 10).and_return(true)
+      allow(discount).to receive(:reduction).with(delivery_list, 10).and_return(3)
+      allow(discount).to receive(:name).and_return(discount_name)
+      allow(discount_2).to receive(:applies?).with(delivery_list, 7).and_return(true)
+      allow(discount_2).to receive(:reduction).with(delivery_list, 7).and_return(4)
+      allow(discount_2).to receive(:name).and_return(discount_name)
+      allow(delivery_list).to receive(:list).and_return([delivery])
+      allow(delivery).to receive(:delivery_product).and_return(standard)
+      expect(subject.discount_lines).to eq [
+        { name: discount_name, reduction: 3, subtotal: 7 },
+        { name: discount_name, reduction: 4, subtotal: 3 }]
+    end
+
+    it 'returns only 1 discount that applies out of 2' do
+      discount = double('discount')
+      discount_2 = double('discount_2')
+      discount_name = double('discount_name')
+      allow(discount_list).to receive(:list).and_return([discount, discount_2])
+      allow(discount).to receive(:applies?).with(delivery_list, 10).and_return(true)
+      allow(discount).to receive(:reduction).with(delivery_list, 10).and_return(3)
+      allow(discount).to receive(:name).and_return(discount_name)
+      allow(discount_2).to receive(:applies?).with(delivery_list, 7).and_return(false)
+      allow(delivery_list).to receive(:list).and_return([delivery])
+      allow(delivery).to receive(:delivery_product).and_return(standard)
+      expect(subject.discount_lines).to eq [
+        { name: discount_name, reduction: 3, subtotal: 7 }]
+    end
+
+    it 'returns total minus discount amount when a discount applies' do
+      discount = double('discount')
+      discount_2 = double('discount_2')
+      discount_name = double('discount_name')
+      allow(discount_list).to receive(:list).and_return([discount, discount_2])
+      allow(discount).to receive(:applies?).with(delivery_list, 10).and_return(true)
+      allow(discount).to receive(:reduction).with(delivery_list, 10).and_return(3)
+      allow(discount).to receive(:name).and_return(discount_name)
+      allow(discount_2).to receive(:applies?).with(delivery_list, 7).and_return(false)
+      allow(delivery_list).to receive(:list).and_return([delivery])
+      allow(delivery).to receive(:delivery_product).and_return(standard)
+      expect(subject.discount_lines(return_total: true)).to eq 7
+    end
+  end
+
   describe '#total' do
     let(:discount) { double('discount') }
 
