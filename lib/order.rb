@@ -18,7 +18,7 @@ class Order
   end
 
   def subtotal
-    delivery_list.reduce(0) do |total, delivery|
+    self.delivery_list.reduce(0) do |total, delivery|
       total + delivery.delivery_product.price
     end
   end
@@ -37,8 +37,8 @@ class Order
 
   def discount_lines(return_total: false)
     lines = []
-    running_subtotal = subtotal
-    discount_list.each do |discount|
+    running_subtotal = self.subtotal
+    self.discount_list.each do |discount|
       next unless discount.applies?(@delivery_list, running_subtotal)
       reduction = discount.reduction(@delivery_list, running_subtotal)
       running_subtotal -= reduction
@@ -49,6 +49,6 @@ class Order
   end
 
   def total
-    discount_lines(return_total: true)
+    self.discount_lines(return_total: true)
   end
 end

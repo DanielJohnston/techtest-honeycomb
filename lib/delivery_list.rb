@@ -12,7 +12,7 @@ class DeliveryList
   end
 
   def count(delivery_product)
-    list.count do |delivery|
+    self.list.count do |delivery|
       delivery.delivery_product == delivery_product
     end
   end
