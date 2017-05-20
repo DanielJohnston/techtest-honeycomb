@@ -2,7 +2,7 @@ require 'order'
 
 describe Order do
   subject do
-    order = Order.new material, discount_list, delivery_list
+    order = Order.new material, discount_list, delivery_list, date_time
   end
 
   let(:material) { double('material') }
@@ -11,13 +11,32 @@ describe Order do
   let(:delivery) { double('delivery') }
   let(:standard) { double('standard_delivery_product') }
   let(:express) { double('express_delivery_product') }
+  let(:date_time) { double('date_time') }
 
   before(:each) do
     allow(standard).to receive(:price).and_return(10)
     allow(express).to receive(:price).and_return(20)
   end
 
+  describe '#date_time' do
+    it 'is within 5 seconds of the current time by default' do
+      order = Order.new material, discount_list, delivery_list
+      expect(Time.now - order.date_time).to be < 5
+    end
+
+    it 'returns the order date that I set' do
+      date_time = Time.now
+      order = Order.new material, discount_list, delivery_list, date_time
+      expect(order.date_time).to eq date_time
+    end
+  end
+
   describe '#new' do
+    it 'can include a specific date in order creation' do
+      date_time = Time.now
+      expect { Order.new material, discount_list, delivery_list, date_time }.to_not raise_error
+    end
+
     it 'accepts material and delivery list arguments upon creation' do
       expect { subject }.to_not raise_error
     end
@@ -83,7 +102,7 @@ describe Order do
     it 'returns an empty list when 0 of 1 possible discounts apply' do
       discount = double('discount')
       allow(discount_list).to receive(:list).and_return([discount])
-      allow(discount).to receive(:applies?).with(delivery_list, 10).and_return(false)
+      allow(discount).to receive(:reduction).with(delivery_list, 10, date_time).and_return(0)
       allow(delivery_list).to receive(:list).and_return([delivery])
       allow(delivery).to receive(:delivery_product).and_return(standard)
       expect(subject.discount_lines).to eq []
@@ -92,7 +111,7 @@ describe Order do
     it 'returns total equal to subtotal when no discounts apply' do
       discount = double('discount')
       allow(discount_list).to receive(:list).and_return([discount])
-      allow(discount).to receive(:applies?).with(delivery_list, 10).and_return(false)
+      allow(discount).to receive(:reduction).with(delivery_list, 10, date_time).and_return(0)
       allow(delivery_list).to receive(:list).and_return([delivery])
       allow(delivery).to receive(:delivery_product).and_return(standard)
       expect(subject.discount_lines(return_total: true)).to eq 10
@@ -103,11 +122,9 @@ describe Order do
       discount_2 = double('discount_2')
       discount_name = double('discount_name')
       allow(discount_list).to receive(:list).and_return([discount, discount_2])
-      allow(discount).to receive(:applies?).with(delivery_list, 10).and_return(true)
-      allow(discount).to receive(:reduction).with(delivery_list, 10).and_return(3)
+      allow(discount).to receive(:reduction).with(delivery_list, 10, date_time).and_return(3)
       allow(discount).to receive(:name).and_return(discount_name)
-      allow(discount_2).to receive(:applies?).with(delivery_list, 7).and_return(true)
-      allow(discount_2).to receive(:reduction).with(delivery_list, 7).and_return(4)
+      allow(discount_2).to receive(:reduction).with(delivery_list, 7, date_time).and_return(4)
       allow(discount_2).to receive(:name).and_return(discount_name)
       allow(delivery_list).to receive(:list).and_return([delivery])
       allow(delivery).to receive(:delivery_product).and_return(standard)
@@ -121,10 +138,9 @@ describe Order do
       discount_2 = double('discount_2')
       discount_name = double('discount_name')
       allow(discount_list).to receive(:list).and_return([discount, discount_2])
-      allow(discount).to receive(:applies?).with(delivery_list, 10).and_return(true)
-      allow(discount).to receive(:reduction).with(delivery_list, 10).and_return(3)
+      allow(discount).to receive(:reduction).with(delivery_list, 10, date_time).and_return(3)
       allow(discount).to receive(:name).and_return(discount_name)
-      allow(discount_2).to receive(:applies?).with(delivery_list, 7).and_return(false)
+      allow(discount_2).to receive(:reduction).with(delivery_list, 7, date_time).and_return(0)
       allow(delivery_list).to receive(:list).and_return([delivery])
       allow(delivery).to receive(:delivery_product).and_return(standard)
       expect(subject.discount_lines).to eq [
@@ -136,10 +152,9 @@ describe Order do
       discount_2 = double('discount_2')
       discount_name = double('discount_name')
       allow(discount_list).to receive(:list).and_return([discount, discount_2])
-      allow(discount).to receive(:applies?).with(delivery_list, 10).and_return(true)
-      allow(discount).to receive(:reduction).with(delivery_list, 10).and_return(3)
+      allow(discount).to receive(:reduction).with(delivery_list, 10, date_time).and_return(3)
       allow(discount).to receive(:name).and_return(discount_name)
-      allow(discount_2).to receive(:applies?).with(delivery_list, 7).and_return(false)
+      allow(discount_2).to receive(:reduction).with(delivery_list, 7, date_time).and_return(0)
       allow(delivery_list).to receive(:list).and_return([delivery])
       allow(delivery).to receive(:delivery_product).and_return(standard)
       expect(subject.discount_lines(return_total: true)).to eq 7
@@ -154,7 +169,7 @@ describe Order do
       allow(delivery_list).to receive(:count).with(express).and_return(0)
       allow(delivery).to receive(:delivery_product).and_return(standard)
       allow(discount_list).to receive(:list).and_return([discount])
-      allow(discount).to receive(:applies?).with(delivery_list, 10).and_return(false)
+      allow(discount).to receive(:reduction).with(delivery_list, 10, date_time).and_return(0)
       expect(subject.total).to eq 10
     end
 
@@ -163,7 +178,7 @@ describe Order do
       allow(delivery_list).to receive(:count).with(express).and_return(1)
       allow(delivery).to receive(:delivery_product).and_return(express)
       allow(discount_list).to receive(:list).and_return([discount])
-      allow(discount).to receive(:applies?).with(delivery_list, 20).and_return(false)
+      allow(discount).to receive(:reduction).with(delivery_list, 20, date_time).and_return(0)
       expect(subject.total).to eq 20
     end
 
@@ -174,7 +189,6 @@ describe Order do
       allow(delivery).to receive(:delivery_product).and_return(express)
       allow(discount_list).to receive(:list).and_return([discount])
       allow(discount).to receive(:name).and_return(name)
-      allow(discount).to receive(:applies?).with(delivery_list, 60).and_return(true)
       allow(discount).to receive(:reduction).with(any_args).and_return(19.5)
       expect(subject.total).to eq 40.5
     end

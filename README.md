@@ -56,6 +56,10 @@ _[Taken from the Honeycomb TV test repo](https://github.com/honeycomb-tv-recruit
 > * send `ZDW/EOWW005/010` to Disney, Discovery, Viacom via Express Delivery
 >      based on the defined Discounts the total should be $40.50
 
+## Extended spec
+
+> Add a discount that only applies in July: spend over $30 to get 20% off
+
 ## Installation and running
 
 This assumes you're installing using a command line on macOS or Linux, or the bash shell in Windows Subsystem for Linux on a Windows 10 Pro edition computer, and that you already have a recent version of Ruby installed.
@@ -109,6 +113,9 @@ It's not helpful to assume the full structure at the start, so the initial tests
 - [x] Extract out discounts
 - [x] Create a development interface that sets up the specified info and drops to Pry
 - [x] Refactor discounts to a DiscountList class and use Discount as a context for individual discount strategies using strategy pattern
+- [x] Add a date field to each order
+- [x] Combine discount#applies? and discount#reduction
+- [x] Add the discount from the extended spec
 - [ ] Create a hierarchy for order of executing discount strategies
 - [ ] Create an OrderSummary class that brings together all the information in a readable way, suitable for permanent storage if wanted
 - [ ] Select material per order_line instead of per order, allowing multiple materials in one order

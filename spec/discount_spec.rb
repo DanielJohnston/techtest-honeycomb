@@ -21,22 +21,14 @@ describe Discount do
     end
   end
 
-  describe '#applies?' do
-    it 'returns true if the strategy returns true' do
-      delivery_list = double('delivery_list')
-      running_subtotal = double('running_subtotal')
-      allow(discount_strategy).to receive(:applies?).with(delivery_list, running_subtotal).and_return(true)
-      expect(subject.applies?(delivery_list, running_subtotal)).to be true
-    end
-  end
-
   describe '#reduction' do
     it 'passes through the strategy result' do
       delivery_list = double('delivery_list')
       running_subtotal = double('running_subtotal')
+      date_time = double('date_time')
       result = double('result')
-      allow(discount_strategy).to receive(:reduction).with(delivery_list, running_subtotal).and_return(result)
-      expect(subject.reduction(delivery_list, running_subtotal)).to eq result
+      allow(discount_strategy).to receive(:reduction).with(delivery_list, running_subtotal, date_time).and_return(result)
+      expect(subject.reduction(delivery_list, running_subtotal, date_time)).to eq result
     end
   end
 end

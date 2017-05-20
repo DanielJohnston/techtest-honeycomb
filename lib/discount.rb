@@ -7,11 +7,7 @@ class Discount
     @discount_strategy.name
   end
 
-  def applies?(delivery_list, running_subtotal)
-    @discount_strategy.applies? delivery_list, running_subtotal
-  end
-
-  def reduction(delivery_list, running_subtotal)
-    @discount_strategy.reduction delivery_list, running_subtotal
+  def reduction(delivery_list, running_subtotal, date_time)
+    @discount_strategy.reduction delivery_list, running_subtotal, date_time
   end
 end

@@ -1,8 +1,13 @@
 class Order
-  def initialize(material, discount_list, delivery_list = DeliveryList.new)
+  def initialize(material, discount_list, delivery_list = DeliveryList.new, date_time=Time.now)
     @material = material
     @discount_list = discount_list
     @delivery_list = delivery_list
+    @date_time = date_time
+  end
+
+  def date_time
+    @date_time
   end
 
   def clock
@@ -39,8 +44,8 @@ class Order
     lines = []
     running_subtotal = self.subtotal
     self.discount_list.each do |discount|
-      next unless discount.applies?(@delivery_list, running_subtotal)
-      reduction = discount.reduction(@delivery_list, running_subtotal)
+      reduction = discount.reduction(@delivery_list, running_subtotal, @date_time)
+      next unless reduction > 0
       running_subtotal -= reduction
       lines << { name: discount.name, reduction: reduction, subtotal: running_subtotal }
     end
